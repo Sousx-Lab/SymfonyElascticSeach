@@ -1,0 +1,30 @@
+{% extends "base.html.twig" %}
+   {% block title 'Binevenue sur le blog' %}
+    {% block body %}
+    {% if query == false %}
+      <div class="text-center pt-4">
+        <h2>Ooops ! <br> Vous tentez de faire une recherche sans mot clé !</h2>
+        <p>Essayez de taper au moins un mot clé. sinon je ne sais pas quoi vous trouver :( <br>
+         </p>
+      </div>
+    {% endif %}
+   {% if results is defined %}
+     <div class="pt-4">
+         {% if totalHits <= 0 %}
+            <h3 class="text-center"> Aucun resultat trouvé pour le mot : <em>{{ query }}</em></h3>
+         {% else %}
+        <h3> {{ totalHits }} resultats pour le mot: <em>{{ query }}</em></h3>
+        {% endif %}
+      </div>
+       {% for result in results %}
+   <div class="col-8 mt-4 mb-4">
+      <a href="{{ result["url"] }}">
+         <h2>{{ result["title"] }}</h2>
+      </a>
+    <p> Par :<em> {{result["author"]}}</em> Le: <em><small>{{ result["createdAt"] }}</small></em></p>
+      </div>
+   {% endfor %}
+{% endif %}
+  
+
+{% endblock %}

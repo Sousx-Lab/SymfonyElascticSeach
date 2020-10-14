@@ -1,0 +1,12 @@
+{% extends "base.html.twig" %}
+{% block title 'Binevenue sur le blog' %}
+{% block body %}
+    <h1 class="text-center pt-4">Les derniers articles</h1>
+    {% if posts is defined %}
+        {% for post in posts %}
+        <div class="col-8 pt-4 mb-3">
+        {% include "/post/_post.html.twig" %}
+    </div>
+    {% endfor %}
+ {% endif %}
+{% endblock %}
