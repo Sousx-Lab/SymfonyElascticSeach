@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Controller\SearchController;
+namespace App\Controller\PostController;
 
+use Throwable;
 use Elastica\Query;
 use Elastica\Client;
 use Elastica\Search;
@@ -12,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class SearchController extends AbstractController
+class SearchPostsController extends AbstractController
 {
 
     /**
@@ -49,15 +50,25 @@ class SearchController extends AbstractController
         $elasticQuery->setQuery($bool)
                      ->setMinScore(1.0);
         /*$elasticQuery->setSize($limit);*/
+        try {
+            $foundedPosts = $client->getIndex('blog')->search($elasticQuery);
+        } catch (Throwable $e) {
+            if($e){
+                $response = new Response();
+                return $this->render('search/search.html.twig', [
+                    'elastica_connexion_error' => true,
+                ],$response->setStatusCode(422));
+                // throw new HttpException(Response::HTTP_UNPROCESSABLE_ENTITY, "Oops la recherche n'a pas pu aboutir");
+            }
+        }
         
-        $foundedPosts = $client->getIndex('blog')->search($elasticQuery);
         $totalHits = $foundedPosts->getTotalHits();
         $results = [];
         foreach($foundedPosts as $post){
             $results[] = $post->getSource();
         }
         
-        return $this->render('post/search.html.twig',[
+        return $this->render('search/search.html.twig',[
             'results' => $results,
             'totalHits' => $totalHits,
             'query' => $query,

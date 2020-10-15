@@ -1,7 +1,24 @@
 {% extends "base.html.twig" %}
    {% block title 'Binevenue sur le blog' %}
     {% block body %}
-    {% if query == false %}
+    {% if elastica_connexion_error is defined %}
+      <div class="row">
+      {% include templates_errors ~ "/error.image.html.twig" %}
+      <div class="col-md-6 align-self-center">
+	   {% if status_code is defined %}
+		 <h1>{{ status_code }}</h1>
+	  {% endif %}
+	<h2>UH OH! Search problem</h2>
+	<p>
+		La requête de recherche n'a pas abouti ! Veuillez réessayez plus tard. </br>
+      Vous pouvez cliquer sur le bouton ci-dessous pour revenir à la page d'accueil.
+	</p>
+	   <a href="{{ path ('home') }}" type="button" class="btn btn-primary">HOME</a>
+      </div>
+   </div>
+    {% endif %}
+
+    {% if query is defined and query == false %}
       <div class="text-center pt-4">
         <h2>Ooops ! <br> Vous tentez de faire une recherche sans mot clé !</h2>
         <p>Essayez de taper au moins un mot clé. sinon je ne sais pas quoi vous trouver :( <br>
@@ -11,9 +28,11 @@
    {% if results is defined %}
      <div class="pt-4">
          {% if totalHits <= 0 %}
-            <h3 class="text-center"> Aucun resultat trouvé pour le mot : <em>{{ query }}</em></h3>
+            <h3 class="text-center"> 
+            Aucun resultat trouvé pour le mot: <em>{{ query }}</em>
+         </h3>
          {% else %}
-        <h3> {{ totalHits }} resultats pour le mot: <em>{{ query }}</em></h3>
+         <p> {{ totalHits }} resultats pour le mot: <strong><em>{{ query }}</em></strong></p>
         {% endif %}
       </div>
        {% for result in results %}

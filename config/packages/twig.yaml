@@ -1,2 +1,5 @@
 twig:
     default_path: '%kernel.project_dir%/templates'
+    cache: false
+    globals:
+        templates_errors: '/bundles/TwigBundle/Exception'

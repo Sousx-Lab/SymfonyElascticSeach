@@ -1,0 +1,12 @@
+<div class="col-md-6 align-self-center">
+	{% if status_code is defined %}
+		<h1>{{ status_code }}</h1>
+	{% endif %}
+	<h2>UH OH! You're lost.</h2>
+	<p>
+		The page you are looking for does not exist.
+		How you got here is a mystery. But you can click the button below
+		to go back to the homepage.
+	</p>
+	<a href="{{ path ('home') }}" type="button" class="btn btn-primary">HOME</a>
+</div>

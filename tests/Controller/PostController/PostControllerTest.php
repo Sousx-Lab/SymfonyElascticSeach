@@ -9,24 +9,24 @@ class PostControllerTest extends WebTestCase
 {
     protected KernelBrowser $client;
 
-    public function setUp()
+    public function setUp(): KernelBrowser
     {
-        $this->client = static::createClient();
+        return $this->client = static::createClient();
     }
 
-    public function testShowPostPageWithGoodSlug()
+    public function testShowPostPageWithGoodSlug(): void
     {
        $this->client->request('GET', '/post/ipsam-fugiat-eaque-repudiandae-sit-voluptatibus-possimus-61');
        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
 
-    public function testShowPostWithBadSlug()
+    public function testShowPostWithBadSlug(): void
     {
         $this->client->request('GET', '/post/ipsam-fugiat-eaque-61');
         $this->assertResponseStatusCodeSame(Response::HTTP_MOVED_PERMANENTLY);
     }
 
-    public function testShowPostWithBadId()
+    public function testShowPostWithBadId(): void
     {
         $this->client->request('GET', '/post/ipsam-fugiat-eaque-63');
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
