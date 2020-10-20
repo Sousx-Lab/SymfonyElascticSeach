@@ -2,14 +2,14 @@
 
 namespace App\Command;
 
-use App\Elasticseach\IndexBuilder;
-use App\Elasticseach\PostIndexer;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
+use App\Services\ElasticSearch\Indexer\PostIndexer;
+use App\Services\ElasticSearch\Indexer\IndexBuilder;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
 class ElasticReindexCommand extends Command
 {
@@ -40,18 +40,18 @@ class ElasticReindexCommand extends Command
         
         $indexName = $input->getArgument('index_name');
 
-        if(empty($_SERVER[$input->getArgument('configuration_env_var')])){
+        if(empty($_ENV[$input->getArgument('configuration_env_var')])){
             throw new \ErrorException($input->getArgument('configuration_env_var') . ' Not exist. Please create a environement variable in .env file');  
         }
         
-        $settingsFile = $_SERVER[$input->getArgument('configuration_env_var')];
+        $settingsFile = $_ENV[$input->getArgument('configuration_env_var')];
         $io = new SymfonyStyle($input, $output);
         
         $index = $this->indexBuilder->create($indexName, $settingsFile);
         $io->success('Index created!');
 
         $this->postIndexer->indexAllDocuments($index->getName());
-        $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
+        $io->success('Items indexed succefully');
 
         return Command::SUCCESS;
     }

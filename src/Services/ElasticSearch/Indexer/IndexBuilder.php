@@ -1,5 +1,5 @@
 <?php 
-namespace App\Elasticseach;
+namespace App\Services\ElasticSearch\Indexer;
 
 use Elastica\Client;
 use Elastica\Index;
@@ -16,6 +16,13 @@ class IndexBuilder
         $this->client = $client;
     }
 
+    /**
+     * Create a ElasticSeach Index
+     * @param string $indexName
+     * @param string $settingsFile
+     * @param string $path
+     * @return Index
+     */
     public function create(string $indexName, string $settingsFile, string $path = null): Index
     {
         if(null === $indexName || \strlen($indexName) === 0){
@@ -23,12 +30,18 @@ class IndexBuilder
         }
 
         if(null === $path){
-            $path = __DIR__ ."/../../config/elasticSearch/" ;
+            $path =  dirname(__DIR__ , 4) . '/config/elasticSearch/';
+        }
+        if(!is_file($path . $settingsFile) || !file_exists($path . $settingsFile )){
+            throw new FileNotFoundException('Settings file not found');
         }
         
-        if(!is_file($path . $settingsFile) || !file_exists($path . $settingsFile)){
-            throw new FileNotFoundException('File config not found');
-        } 
+        $extention = pathinfo($path . $settingsFile);
+        if('yaml' !== $extention['extension']){
+
+            throw new \Exception($settingsFile . " Not a Yaml settings file");
+        }
+
         $settings = $this->parseSettingsFile($path, $settingsFile);
         
         $index = $this->client->getIndex($indexName);
@@ -36,6 +49,12 @@ class IndexBuilder
         return $index;
     }
 
+    /**
+     * Parse YAML settings file
+     * @param string $path
+     * @param string $settingsFile
+     * @return array
+     */
     private function parseSettingsFile(string $path, string $settingsFile): array
     {
         return Yaml::parse(file_get_contents($path . $settingsFile));

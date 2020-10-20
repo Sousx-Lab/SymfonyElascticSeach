@@ -1,5 +1,5 @@
 <?php
-namespace App\Elasticseach;
+namespace App\Services\ElasticSearch\Indexer;
 
 use App\Entity\Post;
 use Elastica\Client;
