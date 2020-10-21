@@ -1,5 +1,5 @@
 <?php
-namespace App\Tests\Services\ElasticSearch;
+namespace App\Tests\Services\ElasticSearch\Indexer;
 
 use Elastica\Client;
 use PHPUnit\Framework\TestCase;
