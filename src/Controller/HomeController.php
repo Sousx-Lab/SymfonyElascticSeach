@@ -9,22 +9,17 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class HomeController extends AbstractController 
 {
-    private PostRepository $repository;
-
-    public function __construct(PostRepository $repository) 
-    {
-        $this->repository = $repository;
-    }
 
     /**
      * @param PostRepository $postRepository
+     * @param Request $request
      * @Route("/", name="home")
      * @return Response
      */
-    public function index(Request $request): Response
+    public function index(PostRepository $repository, Request $request): Response
     {
         return $this->render('home/index.html.twig',[
-            'posts' => $this->repository->findLatest() ? : null,
+            'posts' => $repository->findLatest() ? : [],
             'local' => $request->getPreferredLanguage()
         ]);
     }
