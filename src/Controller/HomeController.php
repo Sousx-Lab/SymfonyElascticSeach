@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Repository\PostRepository;
+use App\Services\Cache\PostsCache;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,10 +17,10 @@ class HomeController extends AbstractController
      * @Route("/", name="home")
      * @return Response
      */
-    public function index(PostRepository $repository, Request $request): Response
+    public function index(PostsCache $postsCache, Request $request): Response
     {
         return $this->render('home/index.html.twig',[
-            'posts' => $repository->findLatest() ? : [],
+            'posts' => $postsCache->getPosts() ? : [],
             'local' => $request->getPreferredLanguage()
         ]);
     }
